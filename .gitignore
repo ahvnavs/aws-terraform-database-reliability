@@ -1,5 +1,7 @@
-.terraform/
+**/.terraform/*
 *.tfstate
-.tfstate.backup
+*.tfstate.*
+crash.log
+crash.*.log
 .env
-*.tfvars
+.DS_Store
