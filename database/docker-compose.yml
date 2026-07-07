@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: hotel-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: DevPassword123!
+      POSTGRES_DB: hotel_bookings_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d hotel_bookings_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+volumes:
+  pgdata:
