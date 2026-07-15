@@ -1,14 +1,13 @@
 terraform {
     required_version = ">= 1.5.0"
 
-    # For local planning without AWS credentials, you can safely comment this backend block out.
-    # backend "s3" {
-    #   bucket       = "terraform-state-bucket"
-    #   key          = "dev/terraform.tfstate"
-    #   region       = "ap-south-1"
-    #   encrypt      = true
-    #   use_lockfile = true
-    # }
+    backend "s3" {
+    bucket       = "terraform-state-bucket"
+    key          = "dev/terraform.tfstate"
+    region       = "ap-south-1"
+    encrypt      = true
+    use_lockfile = true
+    }
 
     required_providers {
         aws = {
