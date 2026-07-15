@@ -1,12 +1,12 @@
 terraform {
   required_version = ">= 1.5.0"
-  backend "s3" {
-    bucket       = "terraform-state-bucket"
-    key          = "dev/terraform.tfstate"
-    region       = "ap-south-1"
-    encrypt      = true
-    use_lockfile = true
-  }
+  #backend "s3" {
+  #  bucket       = "terraform-state-bucket"
+  #  key          = "dev/terraform.tfstate"
+  #  region       = "ap-south-1"
+  #  encrypt      = true
+  #  use_lockfile = true
+  #}
 
   required_providers {
     aws = {
@@ -17,13 +17,18 @@ terraform {
 }
 
 provider "aws" {
-  region = var.aws_region
+  region                      = var.aws_region
+  access_key                  = "mock_access_key"
+  secret_key                  = "mock_secret_key"
+  skip_credentials_validation = true
+  skip_requesting_account_id  = true
+  skip_metadata_api_check     = true
 }
 
 module "network" {
   source = "../../modules/network"
   env    = var.env
-  cidr   = var.vpc_cidr
+  cidr   = [var.vpc_cidr, "10.1.1.0/24", "10.1.2.0/24", "10.1.11.0/24", "10.1.12.0/24"]
 }
 
 module "security_groups" {

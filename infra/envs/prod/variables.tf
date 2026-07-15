@@ -1,39 +1,40 @@
 variable "aws_region" {
-  description = "region"
-  type        = string
+    description = "AWS region"
+    type        = string
 }
 
 variable "env" {
-  description = "env"
-  type        = string
+    description = "Environment name"
+    type        = string
 }
 
 variable "vpc_cidr" {
-  description = "cidr block"
-  type        = list(string)
+    description = "VPC CIDR block"
+    type        = string
 }
 
 variable "db_username" {
-  description = "user"
-  type        = string
+    description = "Database username"
+    type        = string
 }
 
 variable "db_password" {
-  description = "pass"
-  type        = string
+    description = "Database password"
+    type        = string
+    sensitive   = true
 }
 
 variable "db_instance_class" {
-  description = "instance of db"
-  type        = string
+    description = "RDS instance class"
+    type        = string
 }
 
 variable "backup_retention_period" {
-  default = "retention"
-  type    = number
+    description = "Number of days to retain backups"
+    type        = number
 }
 
 variable "deletion_protection" {
-  description = "protect"
-  type        = bool
+    description = "Enable or disable deletion protection"
+    type        = bool
 }
