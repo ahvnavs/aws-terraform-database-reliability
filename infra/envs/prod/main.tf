@@ -1,29 +1,29 @@
 terraform {
-    required_version = ">= 1.5.0"
-    backend "s3" {
-        bucket       = "terraform-state-bucket"
-        key          = "dev/terraform.tfstate"
-        region       = "ap-south-1"
-        encrypt      = true
-        use_lockfile = true
-        }
+  required_version = ">= 1.5.0"
+  backend "s3" {
+    bucket       = "terraform-state-bucket"
+    key          = "dev/terraform.tfstate"
+    region       = "ap-south-1"
+    encrypt      = true
+    use_lockfile = true
+  }
 
-    required_providers {
-        aws = {
-            source  = "hashicorp/aws"
-            version = "~> 5.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
     }
-}
+  }
 }
 
 provider "aws" {
-    region = var.aws_region
+  region = var.aws_region
 }
 
 module "network" {
-    source = "../../modules/network"
-    env    = var.env
-    cidr   = var.vpc_cidr
+  source = "../../modules/network"
+  env    = var.env
+  cidr   = var.vpc_cidr
 }
 
 module "security_groups" {
