@@ -1,39 +1,11 @@
-variable "aws_region" {
-  description = "region"
-  type        = string
-}
-
-variable "env" {
-  description = "env"
-  type        = string
-}
-
-variable "vpc_cidr" {
-  description = "cidr block"
-  type        = list(string)
-}
-
-variable "db_username" {
-  description = "user"
-  type        = string
-}
-
+variable "aws_region" { type = string }
+variable "env" { type = string }
+variable "vpc_cidr" { type = string }
+variable "db_username" { type = string }
 variable "db_password" {
-  description = "pass"
-  type        = string
-}
-
-variable "db_instance_class" {
-  description = "instance of db"
-  type        = string
-}
-
-variable "backup_retention_period" {
-  default = "retention"
-  type    = number
-}
-
-variable "deletion_protection" {
-  description = "protect"
-  type        = bool
-}
+  type = string
+  sensitive = true
+  }
+variable "db_instance_class" { type = string }
+variable "backup_retention_period" { type = number }
+variable "deletion_protection" { type = bool }

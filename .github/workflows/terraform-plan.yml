@@ -1,78 +1,60 @@
 name: "Terraform CI/CD & Security"
 
-# 1. The Trigger: This robot only wakes up when a Pull Request is opened or updated.
 on:
-    pull_request:
-        branches:
-            - main
+  pull_request:
+    branches:
+      - main
 
-# 2. Permissions: The robot needs permission to read code and write comments on the PR.
 permissions:
-    contents: read
-    pull-requests: write
+  contents: read
+  pull-requests: write
 
 jobs:
-    terraform-checks:
-        name: "Terraform Plan & Scan"
-        runs-on: ubuntu-latest
+  terraform-checks:
+    name: "Terraform Plan & Scan"
+    runs-on: ubuntu-latest
 
-    # SPICE 1: The Matrix Strategy.
-    # Instead of writing the code twice for dev and prod, we tell the robot to run everything
-    # simultaneously for both environments. This is how senior engineers write pipelines.
     strategy:
-        fail-fast: false
-        matrix:
-            environment: [dev, prod]
+      fail-fast: false
+      matrix:
+        environment: [dev, prod]
 
     steps:
-        # Step 1: Download the code onto the temporary GitHub runner
-        - name: "Checkout Code"
-            uses: actions/checkout@v4
+      - name: "Checkout Code"
+        uses: actions/checkout@v4
 
-        # Step 2: Install Terraform
-        - name: "Setup Terraform"
-            uses: hashicorp/setup-terraform@v3
-            with:
-                terraform_version: "1.7.0"
+      - name: "Setup Terraform"
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.0"
 
-        # Step 3: Check Formatting (Assessment Requirement)
-        - name: "Terraform Format"
+      - name: "Terraform Format"
         run: terraform fmt -check -recursive
         working-directory: infra/envs/${{ matrix.environment }}
 
-            # Step 4: Initialize Terraform (Assessment Requirement)
       - name: "Terraform Init"
         run: terraform init
         working-directory: infra/envs/${{ matrix.environment }}
 
-      # Step 5: Check Syntax (Assessment Requirement)
       - name: "Terraform Validate"
         run: terraform validate
         working-directory: infra/envs/${{ matrix.environment }}
 
-      # SPICE 2: Static Security Analysis.
-      # This scans your Terraform code for security vulnerabilities before it even plans.
       - name: "Security Scan (tfsec)"
         uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
         with:
           working_directory: infra/envs/${{ matrix.environment }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Step 6: Create the Blueprint (Assessment Requirement)
-      # We output the plan to a file called tfplan to use in the next step.
       - name: "Terraform Plan"
         id: plan
-        run: terraform plan -no-color -out=tfplan
+        run: terraform plan -no-color -refresh=false -out=tfplan
         working-directory: infra/envs/${{ matrix.environment }}
-        # Note: Since actual AWS deployment isn't required, if this fails due to no AWS credentials,
-        # reviewers will still see the code structure. In a real scenario, you'd configure AWS OIDC here.
         env:
           AWS_ACCESS_KEY_ID: dummy
           AWS_SECRET_ACCESS_KEY: dummy
-          AWS_REGION: us-east-1
+          AWS_REGION: ap-south-1
 
-      # SPICE 3: Post the output as a Pull Request Comment (Assessment Requirement)
-      # This uses a script to automatically paste the plan results into the PR discussion.
       - name: "Post Plan to GitHub PR"
         uses: actions/github-script@v7
         if: github.event_name == 'pull_request'

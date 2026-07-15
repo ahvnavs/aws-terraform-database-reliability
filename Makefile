@@ -1,4 +1,4 @@
-.PHONY: db-up db-down tf-init tf-plan tf-fmt
+.PHONY: db-up db-down tf-fmt tf-init-dev tf-plan-dev
 
 db-up:
 	@echo "Starting local database..."
@@ -18,4 +18,4 @@ tf-init-dev:
 
 tf-plan-dev:
 	@echo "Planning Dev Environment..."
-	cd infra/envs/dev && terraform plan
+	cd infra/envs/dev && terraform plan -refresh=false

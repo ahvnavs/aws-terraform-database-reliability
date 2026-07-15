@@ -10,6 +10,7 @@ SELECT
     (ARRAY['CONFIRMED', 'CANCELLED', 'PENDING'])[floor(random() * 3 + 1)],
     NOW() - (floor(random() * 60)::int * interval '1 day')
 FROM generate_series(1, 150);
+
 INSERT INTO booking_events (booking_id, event_type, payload)
 SELECT
     id,
